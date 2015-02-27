@@ -19,7 +19,6 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
         private readonly INavigator _navigator;
         private readonly RootContext _rootContext;
         private IViewModel _activePage;
-        private IViewModel _backgroundMedia;
         private bool _isInFocus;
         private NotificationTrayViewModel _notifications;
         private NotificationTrayViewModel _highPriorityNotifications;
@@ -148,15 +147,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
 
         public IViewModel BackgroundMedia
         {
-            get { return _backgroundMedia; }
-            set
-            {
-                if (Equals(value, _backgroundMedia)) {
-                    return;
-                }
-                _backgroundMedia = value;
-                OnPropertyChanged();
-            }
+            get { return GetPresentationOptions().BackgroundMedia; }
         }
 
         public bool IsInFocus
@@ -240,6 +231,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
             OnPropertyChanged("DisplayHighPriorityNotifications");
             OnPropertyChanged("Title");
             OnPropertyChanged("PlaybackBackgroundOpacity");
+            OnPropertyChanged("BackgroundMedia");
         }
 
         public override async Task Initialize()

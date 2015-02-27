@@ -19,16 +19,18 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemDetails
         private readonly IConnectionManager _connectionManager;
         private readonly IPresenter _presenter;
         private readonly ISessionManager _sessionManager;
+        private readonly IImageManager _imageManager;
         private readonly IEnumerable<IItemDetailSectionGenerator> _generators;
 
         private ItemDetailsViewModel _viewModel;
 
-        public ItemDetailsContext(IApplicationHost appHost, IConnectionManager connectionManager, IPresenter presenter, ISessionManager sessionManager)
+        public ItemDetailsContext(IApplicationHost appHost, IConnectionManager connectionManager, IPresenter presenter, ISessionManager sessionManager, IImageManager imageManager)
             : base(appHost)
         {
             _connectionManager = connectionManager;
             _presenter = presenter;
             _sessionManager = sessionManager;
+            _imageManager = imageManager;
             _generators = appHost.GetExports<IItemDetailSectionGenerator>();
         }
 
@@ -49,7 +51,7 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemDetails
                     }
                 }
 
-                _viewModel = new ItemDetailsViewModel(item, allSections.OrderBy(s => s.SortOrder));
+                _viewModel = new ItemDetailsViewModel(item, _connectionManager, _imageManager, allSections.OrderBy(s => s.SortOrder));
             }
 
             await _presenter.ShowPage(_viewModel);

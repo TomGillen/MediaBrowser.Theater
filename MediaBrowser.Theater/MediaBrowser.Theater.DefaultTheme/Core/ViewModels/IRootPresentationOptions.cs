@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using MediaBrowser.Theater.Api.UserInterface;
 using MediaBrowser.Theater.DefaultTheme.Annotations;
 
 namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
@@ -20,6 +21,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
         private double _playbackBackgroundOpacity;
         private bool _showNotifications;
         private bool _showHighPriorityNotifications;
+        private IViewModel _backgroundMedia;
 
         public bool IsFullScreenPage
         {
@@ -131,6 +133,19 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
             }
         }
 
+        public IViewModel BackgroundMedia
+        {
+            get { return _backgroundMedia; }
+            set
+            {
+                if (Equals(value, _backgroundMedia)) {
+                    return;
+                }
+                _backgroundMedia = value;
+                OnPropertyChanged();
+            }
+        }
+
         public RootPresentationOptions()
         {
             ShowMediaBrowserLogo = true;
@@ -139,6 +154,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
             ShowHighPriorityNotifications = true;
             ShowClock = true;
             Title = null;
+            BackgroundMedia = null;
             PlaybackBackgroundOpacity = 0.9;
         }
 

@@ -109,7 +109,8 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemDetails.ViewModels
             get
             {
                 if (ShowInfo)
-                    return new Size(800 + 20 + 250, 700);
+                    //return new Size(800 + 20 + 250, 700);
+                    return new Size(800 + 20, 700);
 
                 var artWidth = Math.Min(1200, PosterArtwork.ActualWidth);
                 return new Size(artWidth + 20 + 250, 700);
