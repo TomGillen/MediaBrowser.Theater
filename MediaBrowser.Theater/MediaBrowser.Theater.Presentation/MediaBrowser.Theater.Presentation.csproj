@@ -136,6 +136,7 @@
     <Compile Include="Controls\ExtendedScrollViewer.cs" />
     <Compile Include="Controls\FiveStarRating.cs" />
     <Compile Include="Controls\IndexedItemsControl.cs" />
+    <Compile Include="Controls\ItemArtworkSource.cs" />
     <Compile Include="Controls\Osk\AlternateKeySelection.cs" />
     <Compile Include="Controls\Osk\EmptyStringVisibilityConverter.cs" />
     <Compile Include="Controls\Osk\Layout\AcceptAction.cs" />

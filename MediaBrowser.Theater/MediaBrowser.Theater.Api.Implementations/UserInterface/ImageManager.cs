@@ -81,7 +81,7 @@ namespace MediaBrowser.Theater.Api.UserInterface
 
         public async Task<BitmapImage> GetRemoteBitmapAsync(string url, CancellationToken cancellationToken)
         {
-            return await Task.Run(() => GetRemoteBitmapAsyncInternal(url, cancellationToken), cancellationToken);
+            return await Task.Run(() => GetRemoteBitmapAsyncInternal(url, cancellationToken), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace MediaBrowser.Theater.Api.UserInterface
         public async Task<Image> GetRemoteImageAsync(string url, CancellationToken cancellationToken)
         {
             try {
-                BitmapImage bitmap = await GetRemoteBitmapAsync(url, cancellationToken);
+                BitmapImage bitmap = await GetRemoteBitmapAsync(url, cancellationToken).ConfigureAwait(false);
 
                 var image = new Image { Source = bitmap };
 
