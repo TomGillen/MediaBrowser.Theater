@@ -86,7 +86,7 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemDetails.ViewModels
 
         private void LoadItems()
         {
-            IEnumerable<IViewModel> items = _item.People.Select(p => new PersonListItemViewModel(p, _imageManager, _sessionManager, _navigator));
+            IEnumerable<IViewModel> items = _item.People.Select(p => new PersonListItemViewModel(p, _item.ServerId, _imageManager, _sessionManager, _navigator));
 
             People.Clear();
             People.AddRange(items);
@@ -100,13 +100,15 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemDetails.ViewModels
         private readonly ISessionManager _sessionManager;
         private readonly INavigator _navigator;
         private readonly BaseItemPerson _person;
+        private readonly string _serverId;
 
         private Image _image;
         private CancellationTokenSource _imageCancellationTokenSource;
 
-        public PersonListItemViewModel(BaseItemPerson person, IImageManager imageManager, ISessionManager sessionManager, INavigator navigator)
+        public PersonListItemViewModel(BaseItemPerson person, string serverId, IImageManager imageManager, ISessionManager sessionManager, INavigator navigator)
         {
             _person = person;
+            _serverId = serverId;
             _imageManager = imageManager;
             _sessionManager = sessionManager;
             _navigator = navigator;
@@ -116,7 +118,7 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemDetails.ViewModels
 
         private async void NavigateToPerson()
         {
-            await _navigator.Navigate(Go.To.Item(new BaseItemDto { Id = _person.Id }));
+            await _navigator.Navigate(Go.To.Item(new BaseItemDto { Id = _person.Id, Type = "person", ServerId = _serverId }));
         }
 
         public string Name

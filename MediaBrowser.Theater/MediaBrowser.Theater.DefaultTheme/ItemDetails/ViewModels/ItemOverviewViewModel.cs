@@ -69,6 +69,8 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemDetails.ViewModels
                 };
             }
 
+            EnableButtons = !item.IsType("person");
+
             BackgroundArtwork = new ItemArtworkViewModel(item, connectionManager, imageManager) {
                 DesiredImageWidth = DetailsWidth,
                 PreferredImageTypes = new[] { ImageType.Backdrop, ImageType.Screenshot }
@@ -96,6 +98,8 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemDetails.ViewModels
 
         public ItemArtworkViewModel BackgroundArtwork { get; set; }
         public ItemInfoViewModel Info { get; set; }
+
+        public bool EnableButtons { get; set; }
 
         public ICommand ShowCommands
         {

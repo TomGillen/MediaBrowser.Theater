@@ -7,6 +7,7 @@ using MediaBrowser.Model.ApiClient;
 using MediaBrowser.Model.Channels;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
+using MediaBrowser.Model.Net;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Theater.Api.Session;
 
@@ -83,22 +84,27 @@ namespace MediaBrowser.Theater.Api.Library
             }
 
             var searchByParentId = !item.IsPerson && !item.IsGenre && !item.IsStudio;
-            
-            return await apiClient.GetItemsAsync(new ItemQuery {
-                ParentId = searchByParentId ? item.Id : null,
-                PersonIds = item.IsType("Person") ? new[] { item.Id } : null,
-                Genres = item.IsGenre ? new[] { item.Name } : null,
-                StudioIds = item.IsStudio ? new[] { item.Id } : null,
-                UserId = sessionManager.CurrentUser.Id,
-                Recursive = parameters.Recursive,
-                Filters = parameters.Filters,
-                Fields = parameters.Fields ?? DefaultQueryFields,
-                SortBy = parameters.SortBy,
-                SortOrder = parameters.SortOrder,
-                IncludeItemTypes = parameters.IncludeItemTypes,
-                ExcludeItemTypes = parameters.ExcludeItemTypes,
-                Limit = parameters.Limit
-            });
+
+            try {
+                return await apiClient.GetItemsAsync(new ItemQuery {
+                    ParentId = searchByParentId ? item.Id : null,
+                    PersonIds = item.IsType("Person") ? new[] { item.Id } : null,
+                    Genres = item.IsGenre ? new[] { item.Name } : null,
+                    StudioIds = item.IsStudio ? new[] { item.Id } : null,
+                    UserId = sessionManager.CurrentUser.Id,
+                    Recursive = parameters.Recursive,
+                    Filters = parameters.Filters,
+                    Fields = parameters.Fields ?? DefaultQueryFields,
+                    SortBy = parameters.SortBy,
+                    SortOrder = parameters.SortOrder,
+                    IncludeItemTypes = parameters.IncludeItemTypes,
+                    ExcludeItemTypes = parameters.ExcludeItemTypes,
+                    Limit = parameters.Limit
+                });
+            }
+            catch (HttpException) {
+                return new ItemsResult();
+            }
         }
 
         private static ItemsResult FilterResult(ChildrenQueryParams parameters, ItemsResult result)
