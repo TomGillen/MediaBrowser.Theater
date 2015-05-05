@@ -159,13 +159,13 @@ namespace MediaBrowser.Theater.Mpdn
 
         private static void CopyRemoteControlConfigurationFile(string configDirectory, string programDirectory)
         {
-            var configLocation = Path.Combine(configDirectory, "PlayerExtensions.32", "Example.RemoteSettings.config");
+            var configLocation = Path.Combine(configDirectory, "PlayerExtensions.32");
 
             if (!Directory.Exists(configLocation)) {
                 Directory.CreateDirectory(configLocation);
             }
 
-            File.Copy(Path.Combine(programDirectory ?? "", @"MPDN\Example.RemoteSettings.config"), configLocation, true);
+            File.Copy(Path.Combine(programDirectory ?? "", @"MPDN\Example.RemoteSettings.config"), Path.Combine(configLocation, "Example.RemoteSettings.config"), true);
         }
 
         private void EnsureRemoteClientAuthentication()
