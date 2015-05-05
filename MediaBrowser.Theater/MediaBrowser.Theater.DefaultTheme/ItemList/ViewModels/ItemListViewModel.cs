@@ -74,7 +74,7 @@ namespace MediaBrowser.Theater.DefaultTheme.ItemList.ViewModels
         public object GetSortKey(BaseItemDto item)
         {
             if (item.IndexNumber != null) {
-                return item.IndexNumber;
+                return item.IndexNumber.Value.ToString("D10");
             }
 
             return _byName.GetSortKey(item);

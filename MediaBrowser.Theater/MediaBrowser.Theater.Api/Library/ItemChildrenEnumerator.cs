@@ -28,6 +28,19 @@ namespace MediaBrowser.Theater.Api.Library
 
     public static class ItemChildren
     {
+        private class BaseItemComparer : IEqualityComparer<BaseItemDto> 
+        {
+            public bool Equals(BaseItemDto x, BaseItemDto y)
+            {
+                return Equals(x.Id, y.Id);
+            }
+
+            public int GetHashCode(BaseItemDto obj)
+            {
+                return obj.Id.GetHashCode();
+            }
+        }
+
         public static ItemFields[] DefaultQueryFields = {
             ItemFields.ParentId,
             ItemFields.PrimaryImageAspectRatio,
@@ -37,7 +50,8 @@ namespace MediaBrowser.Theater.Api.Library
             ItemFields.Genres,
             ItemFields.Overview,
             ItemFields.DisplayPreferencesId,
-            ItemFields.MediaSources
+            ItemFields.MediaSources,
+            ItemFields.SortName
         };
 
         public static async Task<ItemsResult> Get(IConnectionManager connectionManager, ISessionManager sessionManager, BaseItemDto item, ChildrenQueryParams parameters = null)
@@ -82,29 +96,67 @@ namespace MediaBrowser.Theater.Api.Library
 
                 return FilterResult(parameters, result);
             }
-
+            
             var searchByParentId = !item.IsPerson && !item.IsGenre && !item.IsStudio;
+            
+            if (item.IsType("Person") && parameters.Recursive) {
+                var creditedQuery = CreateQuery(item, parameters, sessionManager, searchByParentId);
+                creditedQuery.IncludeItemTypes = null;
+
+                var items = await apiClient.GetItemsAsync(creditedQuery);
+
+                // expand all folders and merge results
+                // api does not allow us to do this in one query
+                var tasks = items.Items.Select(i => {
+                    if (i.IsFolder) {
+                        var q = CreateQuery(item, parameters, sessionManager, searchByParentId);
+                        q.PersonIds = null;
+                        q.ParentId = i.Id;
+                        q.IncludeItemTypes = null;
+
+                        return apiClient.GetItemsAsync(q);
+                    }
+
+                    return Task.FromResult(new ItemsResult { Items = new[] { i }, TotalRecordCount = 1 });
+                }).ToList();
+
+                await Task.WhenAll(tasks);
+
+                var expanded = tasks.SelectMany(t => FilterResult(parameters, t.Result).Items)
+                                    .Distinct(new BaseItemComparer())
+                                    .OrderBy(dto => dto.SortName)
+                                    .ToArray();
+
+                return new ItemsResult { Items = expanded, TotalRecordCount = expanded.Length };
+            }
 
             try {
-                return await apiClient.GetItemsAsync(new ItemQuery {
-                    ParentId = searchByParentId ? item.Id : null,
-                    PersonIds = item.IsType("Person") ? new[] { item.Id } : null,
-                    Genres = item.IsGenre ? new[] { item.Name } : null,
-                    StudioIds = item.IsStudio ? new[] { item.Id } : null,
-                    UserId = sessionManager.CurrentUser.Id,
-                    Recursive = parameters.Recursive,
-                    Filters = parameters.Filters,
-                    Fields = parameters.Fields ?? DefaultQueryFields,
-                    SortBy = parameters.SortBy,
-                    SortOrder = parameters.SortOrder,
-                    IncludeItemTypes = parameters.IncludeItemTypes,
-                    ExcludeItemTypes = parameters.ExcludeItemTypes,
-                    Limit = parameters.Limit
-                });
+                var query = CreateQuery(item, parameters, sessionManager, searchByParentId);
+                return await apiClient.GetItemsAsync(query);
             }
             catch (HttpException) {
                 return new ItemsResult();
             }
+        }
+
+        private static ItemQuery CreateQuery(BaseItemDto item, ChildrenQueryParams parameters, ISessionManager sessionManager, bool searchByParentId)
+        {
+            var query = new ItemQuery {
+                ParentId = searchByParentId ? item.Id : null,
+                PersonIds = item.IsType("Person") ? new[] { item.Id } : null,
+                Genres = item.IsGenre ? new[] { item.Name } : null,
+                StudioIds = item.IsStudio ? new[] { item.Id } : null,
+                UserId = sessionManager.CurrentUser.Id,
+                Recursive = parameters.Recursive,
+                Filters = parameters.Filters,
+                Fields = parameters.Fields ?? DefaultQueryFields,
+                SortBy = parameters.SortBy,
+                SortOrder = parameters.SortOrder,
+                IncludeItemTypes = parameters.IncludeItemTypes,
+                ExcludeItemTypes = parameters.ExcludeItemTypes,
+                Limit = parameters.Limit
+            };
+            return query;
         }
 
         private static ItemsResult FilterResult(ChildrenQueryParams parameters, ItemsResult result)

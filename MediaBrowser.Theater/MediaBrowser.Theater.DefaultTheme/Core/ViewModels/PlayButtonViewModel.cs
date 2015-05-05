@@ -20,8 +20,23 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
         private readonly ICommand _play;
         private string _displayName;
         private ImageViewerViewModel _image;
+        private bool _isEnabled;
 
         public bool AutoFocus { get; set; }
+
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            private set
+            {
+                if (Equals(value, _isEnabled)) {
+                    return;
+                }
+                
+                _isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
 
         public PlayButtonViewModel(BaseItemDto item, IPlaybackManager playbackManager, IConnectionManager connectionManager, IImageManager imageManager, ISessionManager sessionManager, int? defaultBackgroundImageIndex = null)
             : this(item, playbackManager, connectionManager, imageManager, sessionManager, defaultBackgroundImageIndex != null ? GetImage(item, defaultBackgroundImageIndex.Value, ImageType.Backdrop, connectionManager.GetApiClient(item)) : null)
@@ -31,19 +46,27 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
         public PlayButtonViewModel(BaseItemDto item, IPlaybackManager playbackManager, IConnectionManager connectionManager, IImageManager imageManager, ISessionManager sessionManager, string defaultBackgroundImage = null)
         {
             AutoFocus = true;
-            var loading = Load(item, playbackManager, connectionManager, imageManager, sessionManager, defaultBackgroundImage);
+            IsEnabled = true;
+
+            var loading = Load(item, connectionManager, imageManager, sessionManager, defaultBackgroundImage);
             _play = new RelayCommand(async o => {
                 var media = await loading;
-                await playbackManager.Play(media);
+                if (media.Count > 0) {
+                    await playbackManager.Play(media);
+                }
             });
         }
 
-        private async Task<IList<Media>> Load(BaseItemDto item, IPlaybackManager playbackManager, IConnectionManager connectionManager, IImageManager imageManager, ISessionManager sessionManager, string defaultBackgroundImage = null)
+        private async Task<IList<Media>> Load(BaseItemDto item, IConnectionManager connectionManager, IImageManager imageManager, ISessionManager sessionManager, string defaultBackgroundImage = null)
         {
             var items = await item.GetSmartPlayItems(connectionManager, sessionManager);
-            var media = Enumerable.Concat(items.Take(1).Select(Media.Resume),
-                                          items.Skip(1).Select(Media.Create))
+            var media = Enumerable.Concat(items.Take(1).Select(Media.Resume), items.Skip(1).Select(Media.Create))
                                   .ToList();
+
+            if (!items.Any()) {
+                IsEnabled = false;
+                return new List<Media>();
+            }
 
             FirstItem = items.First();
             var imageUrl = FindImageUrl(_firstItem, defaultBackgroundImage, connectionManager.GetApiClient(_firstItem));

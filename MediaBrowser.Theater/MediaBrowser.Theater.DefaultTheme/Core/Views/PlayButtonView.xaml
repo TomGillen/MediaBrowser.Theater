@@ -10,6 +10,7 @@
              d:DataContext="{d:DesignInstance viewModels:PlayButtonViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <controls:TileButton x:Name="Button"
+                         IsEnabled="{Binding IsEnabled}"
                          Command="{Binding PlayCommand}"
                          Width="{Binding Image.ActualWidth}"
                          Height="{Binding Image.ActualHeight}">

@@ -42,7 +42,7 @@ namespace MediaBrowser.Theater.Mpdn
                 return null;
             }
 
-            IReadOnlyList<ReleaseAsset> assets = await github.Release.GetAssets("Nevcairiel", "LAVFilters", latest.Release.Id).ConfigureAwait(false);
+            IReadOnlyList<ReleaseAsset> assets = await github.Release.GetAllAssets("Nevcairiel", "LAVFilters", latest.Release.Id).ConfigureAwait(false);
             string installer = assets.Where(a => a.ContentType == "application/x-msdownload").Select(a => a.BrowserDownloadUrl).FirstOrDefault();
             string x86Zip = assets.Where(a => a.Name.Contains("x86") && a.ContentType == "application/x-zip-compressed").Select(a => a.BrowserDownloadUrl).FirstOrDefault();
             string x64Zip = assets.Where(a => a.Name.Contains("x64") && a.ContentType == "application/x-zip-compressed").Select(a => a.BrowserDownloadUrl).FirstOrDefault();

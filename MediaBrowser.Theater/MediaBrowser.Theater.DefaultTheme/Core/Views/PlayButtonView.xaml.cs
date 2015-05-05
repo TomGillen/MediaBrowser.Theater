@@ -19,9 +19,15 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.Views
             var vm = DataContext as PlayButtonViewModel;
             if (vm != null && vm.AutoFocus) {
                 if (Button.IsLoaded) {
-                    Button.Focus();
+                    if (Button.IsEnabled) {
+                        Button.Focus();
+                    }
                 } else {
-                    Button.Loaded += (s, arg) => Button.Focus();
+                    Button.Loaded += (s, arg) => {
+                        if (Button.IsEnabled) {
+                            Button.Focus();
+                        }
+                    };
                 }
 
                 vm.AutoFocus = false;

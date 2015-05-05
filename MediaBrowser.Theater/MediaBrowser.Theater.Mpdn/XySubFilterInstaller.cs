@@ -45,7 +45,7 @@ namespace MediaBrowser.Theater.Mpdn
                 return null;
             }
 
-            IReadOnlyList<ReleaseAsset> assets = await github.Release.GetAssets("Cyberbeing", "xy-VSFilter", latest.Release.Id).ConfigureAwait(false);
+            IReadOnlyList<ReleaseAsset> assets = await github.Release.GetAllAssets("Cyberbeing", "xy-VSFilter", latest.Release.Id).ConfigureAwait(false);
             string x86Zip = assets.Where(a => a.Name.Contains("x86") && a.ContentType == "application/x-stuffit").Select(a => a.BrowserDownloadUrl).FirstOrDefault();
             string x64Zip = assets.Where(a => a.Name.Contains("x64") && a.ContentType == "application/x-stuffit").Select(a => a.BrowserDownloadUrl).FirstOrDefault();
 
