@@ -126,28 +126,28 @@
                 <Button Grid.Row="2" Grid.Column="4" Margin="2,2,2,0" Style="{StaticResource ThumbButton}" Command="{Binding ToggleFavoriteCommand.ExecuteCommand}" IsEnabled="{Binding EnableButtons}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                     <Grid>
                         <Image Source="{Binding ToggleFavoriteButtonImage}" Stretch="Fill" Opacity="0.2"/>
-                        <ContentPresenter Content="{Binding ToggleFavoriteCommand.IconViewModel}" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EnableButtons, Converter={StaticResource InverseBooleanToVisibility}}"/>
+                        <ContentPresenter Content="{Binding ToggleFavoriteCommand.IconViewModel}" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EnableButtons, Converter={StaticResource BooleanToVisibility}}"/>
                     </Grid>
                 </Button>
 
                 <Button Grid.Row="2" Grid.Column="5" Margin="2,2,2,0" Style="{StaticResource ThumbButton}" Command="{Binding ToggleLikeCommand.ExecuteCommand}" IsEnabled="{Binding EnableButtons}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                     <Grid>
                         <Image Source="{Binding ToggleLikeButtonImage}" Stretch="Fill" Opacity="0.2"/>
-                        <ContentPresenter Content="{Binding ToggleLikeCommand.IconViewModel}" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EnableButtons, Converter={StaticResource InverseBooleanToVisibility}}"/>
+                        <ContentPresenter Content="{Binding ToggleLikeCommand.IconViewModel}" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EnableButtons, Converter={StaticResource BooleanToVisibility}}"/>
                     </Grid>
                 </Button>
 
                 <Button Grid.Row="2" Grid.Column="6" Margin="2,2,2,0" Style="{StaticResource ThumbButton}" Command="{Binding ToggleDislikeCommand.ExecuteCommand}" IsEnabled="{Binding EnableButtons}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                     <Grid>
                         <Image Source="{Binding ToggleDislikeButtonImage}" Stretch="Fill" Opacity="0.2"/>
-                        <ContentPresenter Content="{Binding ToggleDislikeCommand.IconViewModel}" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EnableButtons, Converter={StaticResource InverseBooleanToVisibility}}"/>
+                        <ContentPresenter Content="{Binding ToggleDislikeCommand.IconViewModel}" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding EnableButtons, Converter={StaticResource BooleanToVisibility}}"/>
                     </Grid>
                 </Button>
 
                 <Button Grid.Row="2" Grid.Column="7" Margin="2,2,0,0" Style="{StaticResource ThumbButton}" Command="{Binding ShowCommands}" IsEnabled="{Binding EnableButtons}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                     <Grid>
                         <Image Source="{Binding ToggleWatchedButtonImage}" Stretch="Fill" Opacity="0.2"/>
-                        <TextBlock Text="..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="42" Visibility="{Binding EnableButtons, Converter={StaticResource InverseBooleanToVisibility}}"/>
+                        <TextBlock Text="..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="42" Visibility="{Binding EnableButtons, Converter={StaticResource BooleanToVisibility}}"/>
                     </Grid>
                 </Button>
             </Grid>
