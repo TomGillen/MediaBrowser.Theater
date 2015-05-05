@@ -26,6 +26,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
         private ImageViewerViewModel _image;
         private ImageType[] _preferredImageTypes;
         private bool _imageInvalid;
+        private bool _enableWatchedIndicator;
 
         public ItemArtworkViewModel(BaseItemDto item, IConnectionManager connectionManager, IImageManager imageManager)
         {
@@ -84,6 +85,17 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
                 }
                 _image = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public bool EnableWatchedIndicator
+        {
+            get { return _enableWatchedIndicator; }
+            set
+            {
+                _enableWatchedIndicator = value;
+                OnPropertyChanged();
+                InvalidateImage();
             }
         }
 
@@ -249,7 +261,9 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
                 ImageType = imageType,
                 ImageIndex = imageIndex,
                 Height = DesiredImageHeight != null && !double.IsPositiveInfinity((double) DesiredImageHeight) ? (int?) Convert.ToInt32(DesiredImageHeight) : null,
-                EnableImageEnhancers = EnableServerImageEnhancers
+                EnableImageEnhancers = EnableServerImageEnhancers,
+                AddPlayedIndicator = EnableWatchedIndicator && Item.UserData != null && Item.UserData.Played,
+                UnPlayedCount = (EnableWatchedIndicator && Item.UserData != null) ? Item.UserData.UnplayedItemCount : null
             };
 
             if (EnforcePreferredImageAspectRatio

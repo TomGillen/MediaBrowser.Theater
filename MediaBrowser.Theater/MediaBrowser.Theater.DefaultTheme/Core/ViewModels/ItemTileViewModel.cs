@@ -72,6 +72,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
             _item = item;
 
             Image = new ItemArtworkViewModel(item, connectionManager, imageManager);
+            Image.EnableWatchedIndicator = true;
             Image.PreferredImageTypes = new[] { ImageType.Primary, ImageType.Thumb, ImageType.Backdrop };
             Image.EnforcePreferredImageAspectRatio = true;
             Image.PropertyChanged += (senger, args) => {
