@@ -133,7 +133,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
                         return "MediaBrowser.Theater.DefaultTheme:Strings:ItemInfo_DateRange".LocalizeFormat(_item.ProductionYear.Value, _item.EndDate.Value.Year);
                     }
 
-                    if (_item.Status.HasValue && _item.Status.Value == SeriesStatus.Continuing) {
+                    if (_item.SeriesStatus.HasValue && _item.SeriesStatus.Value == SeriesStatus.Continuing) {
                         return "MediaBrowser.Theater.DefaultTheme:Strings:ItemInfo_DateRangeContinuing".LocalizeFormat(_item.ProductionYear.Value);
                     }
 
@@ -315,7 +315,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Core.ViewModels
         {
             get
             {
-                if ((_item.Status ?? SeriesStatus.Continuing) == SeriesStatus.Continuing) {
+                if ((_item.SeriesStatus ?? SeriesStatus.Continuing) == SeriesStatus.Continuing) {
                     return "MediaBrowser.Theater.DefaultTheme:Strings:AiringLabel".Localize();
                 }
 
