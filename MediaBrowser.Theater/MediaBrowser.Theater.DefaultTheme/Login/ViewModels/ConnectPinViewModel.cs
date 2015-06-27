@@ -11,6 +11,7 @@ using MediaBrowser.Theater.Api;
 using MediaBrowser.Theater.Api.UserInterface;
 using MediaBrowser.Theater.Presentation;
 using MediaBrowser.Theater.Presentation.ViewModels;
+using MediaBrowser.Theater.Api.Navigation;
 
 namespace MediaBrowser.Theater.DefaultTheme.Login.ViewModels
 {
@@ -22,6 +23,7 @@ namespace MediaBrowser.Theater.DefaultTheme.Login.ViewModels
         private string _pin;
         private bool _hasErrors;
         private ICommand _generatePinCommand;
+        private ICommand _selectServerCommand;
         private string _errorDescription;
 
         private PinCreationResult _pinResult;
@@ -66,6 +68,20 @@ namespace MediaBrowser.Theater.DefaultTheme.Login.ViewModels
             }
         }
 
+        public ICommand SelectServerCommand
+        {
+            get { return _selectServerCommand; }
+            private set
+            {
+                if (Equals(value, _selectServerCommand)) {
+                    return;
+                }
+
+                _selectServerCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string ErrorDescription
         {
             get { return _errorDescription; }
@@ -79,10 +95,11 @@ namespace MediaBrowser.Theater.DefaultTheme.Login.ViewModels
             }
         }
 
-        public ConnectPinViewModel(ITheaterApplicationHost appHost, IConnectionManager connectionManager)
+        public ConnectPinViewModel(ITheaterApplicationHost appHost, IConnectionManager connectionManager, INavigator navigator)
         {
             _appHost = appHost;
             _connectionManager = connectionManager;
+            _selectServerCommand = new RelayCommand(o => navigator.Navigate(Go.To.ServerSelection()));
         }
 
         public override Task Initialize()
